@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1042065419139",
+    "firebase_url": "https://chytrykviz-56217.firebaseio.com",
+    "project_id": "chytrykviz-56217",
+    "storage_bucket": "chytrykviz-56217.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042065419139:android:1912cfdead6ed551b524b6",
+        "android_client_info": {
+          "package_name": "com.svobodainteractive.partykviz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042065419139-kktshfrp5leakhf9njl9hiob2sn8k9t6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6O-bggva7hkRpEXWLye56PFD18OQ9XAk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042065419139-kktshfrp5leakhf9njl9hiob2sn8k9t6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
