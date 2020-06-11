@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:partykviz/GameManager/gameManager.dart' as GameManager;
+import 'package:partykviz/Services/GameManager.dart' as GameManager;
 
 import 'lobby.dart';
 
@@ -25,7 +25,6 @@ class _ConnectToGameState extends State<ConnectToGame> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    GameManager.player.looseAdmin();
   }
 
   @override
@@ -49,6 +48,7 @@ class _ConnectToGameState extends State<ConnectToGame> {
             margin: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
               controller: myController,
+              maxLength: 5,
               decoration: InputDecoration(
                   hintText: 'Zadej kód místnosti',
                   filled: true,
@@ -66,7 +66,7 @@ class _ConnectToGameState extends State<ConnectToGame> {
 
                         if (snapShot == null || !snapShot.exists) {
                           setState(() {
-                            errorMessage = "Neplatná místnost...";
+                            errorMessage = "Neplatná místnost";
                           });
                         } else {
                           print("Should connect");

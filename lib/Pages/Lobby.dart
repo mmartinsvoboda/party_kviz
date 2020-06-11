@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:partykviz/GameManager/gameManager.dart' as GameManager;
-import 'package:partykviz/Pages/questionView.dart';
+import 'package:partykviz/Pages/Quesion.dart';
+import 'package:partykviz/Services/GameManager.dart' as GameManager;
+import 'package:partykviz/Services/Player.dart' as Player;
+import 'package:partykviz/Services/Room.dart' as GameRoom;
 
 class GameLobby extends StatefulWidget {
   @override
@@ -11,30 +13,31 @@ class GameLobby extends StatefulWidget {
 }
 
 class _GameLobbyState extends State<GameLobby> {
-  String now;
-  dynamic everySecond;
+  Timer everySecond;
 
   @override
   void initState() {
     super.initState();
+    if (GameManager.allTopics.length == 0 && GameRoom.admin == Player.name) {
+      var document = Firestore.instance.document("Topics/Topic Manager");
+      document.get().then((value) {
+        GameManager.allTopics.addAll(List.from(value.data["topics"]));
+        print("${GameManager.allTopics.length} topics loaded");
+      });
+    }
 
-    // sets first value
-    now = DateTime.now().second.toString();
-
-    // defines a timer
+    GameManager.startStream();
     everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
       startGame();
-      setState(() {
-        now = DateTime.now().second.toString();
-      });
+      //setState(() {});
     });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    everySecond.cancel();
     super.dispose();
+    everySecond.cancel();
   }
 
   @override
@@ -42,6 +45,7 @@ class _GameLobbyState extends State<GameLobby> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Nová hra"),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15),
@@ -62,7 +66,7 @@ class _GameLobbyState extends State<GameLobby> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   child: Center(
                     child: Text(
-                      GameManager.gameRoom.roomName,
+                      GameRoom.roomName,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -82,7 +86,7 @@ class _GameLobbyState extends State<GameLobby> {
             ),
             Expanded(
               child: StreamBuilder(
-                  stream: GameManager.gameRoom.stream,
+                  stream: GameManager.stream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Text("Loading...");
@@ -114,7 +118,7 @@ class _GameLobbyState extends State<GameLobby> {
                         });
                   }),
             ),
-            GameManager.player.isAdmin
+            (GameRoom.admin == Player.name)
                 ? Column(
                     children: [
                       SizedBox(
@@ -123,13 +127,9 @@ class _GameLobbyState extends State<GameLobby> {
                       RaisedButton(
                         color: Colors.green,
                         child: Text("Spustit hru"),
-                        onPressed: () {
-                          setState(() {
-                            Firestore.instance
-                                .collection("Gamerooms")
-                                .document(GameManager.gameRoom.roomName)
-                                .updateData({"hasStarted": true});
-                          });
+                        onPressed: () async {
+                          await GameManager.nextRound();
+                          await GameRoom.startGame();
                         },
                       ),
                       SizedBox(
@@ -146,14 +146,15 @@ class _GameLobbyState extends State<GameLobby> {
 
   void startGame() async {
     try {
-      if (GameManager.gameRoom.snapshot.data["hasStarted"]) {
+      if (GameManager.snapshot.data["started"]) {
         print("Start Game");
+
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (BuildContext context) => QuestionView()),
             (route) => false);
       } else {
-        print("has not started yet.");
+        print("Has not started yet.");
       }
     } catch (e) {}
   }
