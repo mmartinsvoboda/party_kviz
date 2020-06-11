@@ -67,7 +67,7 @@ Future updateRoomInfo(DocumentSnapshot document) async {
     GameManager.updateCurrentTopic(document.data["topic"]);
   }
   topic = document.data["topic"];
-  time = document.data["time"];
+  time = document.data["timestamp"];
   started = document.data["started"];
   players = List.from(document.data["players"]);
   selectedTopics = List.from(document.data["selectedTopics"]);
@@ -113,7 +113,7 @@ Future setTopic(String text) async {
 Future setTime() async {
   await Firestore.instance
       .document("Gamerooms/$roomName")
-      .updateData({"time": Timestamp.now()});
+      .updateData({"timestamp": Timestamp.now()});
 }
 
 Future addSelectedTopics(String topic) async {

@@ -53,6 +53,7 @@ class _QuestionViewState extends State<QuestionView> {
         if (sendAnswerTime < 0) {
           print("Answered");
           everySecond.cancel();
+          //todo restart sendAnserTime if not all players answered
           //todo GotoVotePage
         }
       }
